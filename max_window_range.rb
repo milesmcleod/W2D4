@@ -14,10 +14,10 @@ def windowed_max_range(array, w)
 
 end
 
-puts windowed_max_range([1, 0, 2, 5, 4, 8], 2)
-puts windowed_max_range([1, 0, 2, 5, 4, 8], 3)
-puts windowed_max_range([1, 0, 2, 5, 4, 8], 4)
-puts windowed_max_range([1, 3, 2, 5, 4, 8], 5)
+# puts windowed_max_range([1, 0, 2, 5, 4, 8], 2)
+# puts windowed_max_range([1, 0, 2, 5, 4, 8], 3)
+# puts windowed_max_range([1, 0, 2, 5, 4, 8], 4)
+# puts windowed_max_range([1, 3, 2, 5, 4, 8], 5)
 
 class MyQueue
   def initialize
@@ -74,6 +74,7 @@ class MyStack
         @min_vals << el
       end
     end
+
   end
 
   def max
@@ -95,6 +96,7 @@ class MyStack
   def empty?
     @store.empty?
   end
+
 end
 
 class MinMaxStackQueue
@@ -128,11 +130,15 @@ class MinMaxStackQueue
   end
 
   def min
+    return @two.min if @one.min.nil?
+    return @one.min if @two.min.nil?
     return @one.min if @one.min < @two.min
     @two.min
   end
 
   def max
+    return @two.max if @one.max.nil?
+    return @one.max if @two.max.nil?
     return @one.max if @one.max > @two.max
     @two.max
   end
@@ -144,9 +150,32 @@ class MinMaxStackQueue
   def empty?
     @one.empty? && @two.empty?
   end
+
 end
 
-puts windowed_max_range([1, 0, 2, 5, 4, 8], 2)
-puts windowed_max_range([1, 0, 2, 5, 4, 8], 3)
-puts windowed_max_range([1, 0, 2, 5, 4, 8], 4)
-puts windowed_max_range([1, 3, 2, 5, 4, 8], 5)
+def optimized_max_range(arr,window)
+  q = MinMaxStackQueue.new
+
+  copy = arr.dup
+
+  window.times do |i|
+    q.enqueue(copy.shift)
+  end
+  range = q.max - q.min
+
+  until copy.empty?
+    q.dequeue
+    q.enqueue(copy.shift)
+    if q.max - q.min > range
+      range = q.max - q.min
+    end
+  end
+
+  range
+
+end
+
+puts optimized_max_range([1, 0, 2, 5, 4, 8], 2)
+puts optimized_max_range([1, 0, 2, 5, 4, 8], 3)
+puts optimized_max_range([1, 0, 2, 5, 4, 8], 4)
+puts optimized_max_range([1, 3, 2, 5, 4, 8], 5)
