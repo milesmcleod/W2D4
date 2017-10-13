@@ -44,12 +44,16 @@ end
 class MyStack
   def initialize
     @max_vals = []
+    @min_vals = []
     @store = []
   end
 
   def pop
     if @store.last == @max_vals.last
       @max_vals.pop
+    end
+    if @store.last == @min_vals.last
+      @min_vals.pop
     end
     @store.pop
   end
@@ -63,10 +67,21 @@ class MyStack
         @max_vals << el
       end
     end
+    if @min_vals.empty?
+      @min_vals << el
+    else
+      if @min_vals.last >= el
+        @min_vals << el
+      end
+    end
   end
 
   def max
     @max_vals.last
+  end
+
+  def min
+    @min_vals.last
   end
 
   def peek
@@ -82,7 +97,7 @@ class MyStack
   end
 end
 
-class StackQueue
+class MinMaxStackQueue
 
   def initialize
     @one = MyStack.new
@@ -112,6 +127,16 @@ class StackQueue
     # x
   end
 
+  def min
+    return @one.min if @one.min < @two.min
+    @two.min
+  end
+
+  def max
+    return @one.max if @one.max > @two.max
+    @two.max
+  end
+
   def size
     @one.size + @two.size
   end
@@ -120,3 +145,8 @@ class StackQueue
     @one.empty? && @two.empty?
   end
 end
+
+puts windowed_max_range([1, 0, 2, 5, 4, 8], 2)
+puts windowed_max_range([1, 0, 2, 5, 4, 8], 3)
+puts windowed_max_range([1, 0, 2, 5, 4, 8], 4)
+puts windowed_max_range([1, 3, 2, 5, 4, 8], 5)
